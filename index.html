@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEIC® 공식 사이트</title>
+    <style>
+        /* 기본 스타일 초기화 */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f5f6f8; color: #333; }
+
+        /* ====== 헤더 영역 ====== */
+        header { background-color: #1670df; color: #fff; width: 100%; position: relative; z-index: 100; }
+
+        .top-header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-size: 32px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: -1.5px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .brand-logo .asterisk { font-size: 28px; margin-right: 2px; }
+        .brand-logo .dot { color: #fff; }
+
+        .user-pill-bar {
+            background-color: #ffffff;
+            color: #333;
+            border-radius: 30px;
+            padding: 6px 8px 6px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .ybm-logo {
+            color: #e02020;
+            font-weight: 900;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .ybm-logo span { color: #0042a5; }
+        .divider { color: #ddd; font-size: 11px; }
+
+        .user-name { font-weight: bold; color: #444; cursor: pointer; }
+        .user-pill-bar span.link-item { color: #555; cursor: pointer; }
+        .user-pill-bar span.link-item:hover { color: #1670df; }
+
+        .btn-all-exam {
+            background-color: #f1f3f5;
+            color: #333;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-all-exam:hover { background-color: #e2e6ea; }
+
+        /* ====== 메인 메뉴바 & 슬라이드 드롭다운 메뉴 스타일 ====== */
+        .nav-border-top { border-top: 1px solid rgba(255, 255, 255, 0.15); position: relative; }
+
+        .main-menu-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .main-menu-container > ul {
+            display: flex;
+            list-style: none;
+            width: 100%;
+            justify-content: space-between;
+        }
+        .main-menu-container > ul > li {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+            cursor: pointer;
+            padding: 14px 0;
+            position: relative;
+            letter-spacing: -0.5px;
+        }
+        .main-menu-container > ul > li.has-badge::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: -8px;
+            width: 5px;
+            height: 5px;
+            background-color: #ff5252;
+            border-radius: 50%;
+        }
+        .external-icon { font-size: 12px; margin-left: 3px; opacity: 0.8; }
+
+        /* 슬라이드 드롭다운 패널 (평소엔 숨겨져 있음) */
+        .dropdown-panel {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            color: #333;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            max-height: 0; /* 슬라이드 애니메이션을 위한 초기값 */
+            transition: max-height 0.35s ease-in-out, padding 0.35s ease-in-out;
+            border-bottom: 1px solid #e5e5e5;
+            z-index: 99;
+        }
+
+        /* 드롭다운이 열렸을 때 클래스 */
+        header.menu-open .dropdown-panel {
+            max-height: 300px; /* 서브메뉴가 모두 보일 충분한 높이 */
+            padding: 30px 0;
+        }
+
+        .dropdown-content-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr); /* 7개 메뉴 열에 맞춤[cite: 9] */
+            gap: 15px;
+            padding: 0 20px;
+        }
+
+        .dropdown-col {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .dropdown-col a {
+            font-size: 13px;
+            color: #555;
+            text-decoration: none;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+        .dropdown-col a:hover {
+            color: #1670df;
+            font-weight: bold;
+        }
+
+        /* 서브 브레드크럼 (성적확인 경로) */
+        .sub-nav-bar {
+            background-color: #fff;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 10px 10%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #666;
+        }
+        .sub-nav-bar select {
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            color: #1670df;
+            font-weight: bold;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .dev-controls {
+            background: #222;
+            color: #fff;
+            padding: 8px;
+            text-align: center;
+            font-size: 13px;
+        }
+        .dev-controls button {
+            background: #1670df;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            margin: 0 4px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .main-container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+            min-height: 500px;
+        }
+
+        /* ====== 배너 그리드 영역 ====== */
+        .main-banners {
+            display: grid;
+            grid-template-columns: 2fr 1.2fr 1.2fr;
+            gap: 15px;
+            margin-bottom: 40px;
+            align-items: stretch;
+        }
+
+        .img-banner-card {
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            background: #fff;
+            display: flex;
+        }
+        .img-banner-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+        }
+
+        .bg-light-blue {
+            background: linear-gradient(180deg, #d4e7ff 0%, #edf3fe 100%);
+            border-radius: 16px;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+        .chip-buttons { display: flex; flex-direction: column; gap: 10px; }
+        .chip-btn {
+            background: #fff;
+            border-radius: 30px;
+            padding: 11px 18px;
+            font-size: 13px;
+            border: 1px solid #e1eaf8;
+            text-align: left;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: all 0.2s;
+        }
+        .chip-btn:hover { background: #fafcff; border-color: #1670df; }
+        .chip-btn.active-highlight {
+            border: 1.5px solid #1670df;
+            color: #1670df;
+            box-shadow: 0 4px 10px rgba(22, 112, 223, 0.15);
+        }
+        .badge-new {
+            background-color: #fff0f0;
+            color: #ff3b30;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        /* 시험 일정 안내 */
+        .schedule-section h3 { font-size: 18px; font-weight: bold; margin-bottom: 15px; }
+        .schedule-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .schedule-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #eaeaea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .schedule-card .badge {
+            display: inline-block;
+            background: #1670df;
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .schedule-card .date { font-size: 18px; font-weight: bold; color: #111; margin-bottom: 15px; }
+        .schedule-card .info-text { font-size: 12px; color: #888; line-height: 1.5; }
+
+        /* 성적확인 화면 */
+        .score-page-title { text-align: center; font-size: 26px; font-weight: bold; margin: 40px 0 30px 0; color: #111; }
+        .score-section-hdr { font-size: 16px; font-weight: bold; margin-bottom: 10px; }
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-top: 2px solid #333;
+            margin-bottom: 20px;
+        }
+        .score-table th { background-color: #f8f9fa; padding: 12px; font-size: 13px; color: #555; font-weight: 600; border-bottom: 1px solid #e9ecef; }
+        .score-table td { padding: 20px 12px; text-align: center; font-size: 13px; color: #666; border-bottom: 1px solid #e9ecef; }
+
+        .action-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
+        .btn-outline { border: 1px solid #1670df; color: #1670df; background: #fff; padding: 8px 18px; border-radius: 4px; font-size: 13px; cursor: pointer; }
+        .btn-fill { background: #1670df; color: #fff; border: none; padding: 8px 18px; border-radius: 4px; font-size: 13px; cursor: pointer; }
+        .notice-list { margin-top: 25px; font-size: 12px; color: #777; line-height: 1.8; }
+
+        /* 로그인창 화면 */
+        .login-box { width: 360px; margin: 60px auto; text-align: center; background: #fff; padding: 40px; border-radius: 12px; border: 1px solid #e5e5e5; }
+        .login-box h2 { font-size: 24px; font-weight: 800; color: #111; margin-bottom: 25px; }
+        .login-input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; outline: none; }
+        .login-btn-main { width: 100%; padding: 14px; background-color: #1670df; color: #fff; border: none; border-radius: 4px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .login-sub-links { display: flex; justify-content: center; gap: 12px; margin-top: 20px; font-size: 12px; color: #666; }
+
+        .screen-view { display: none; }
+        .screen-view.active { display: block; }
+    </style>
+</head>
+<body>
+
+<!--<div class="dev-controls">-->
+<!--    <span>[화면전환 테스트]: </span>-->
+<!--    <button onclick="changeView('view-main-guest')">1. 로그인 전 메인</button>-->
+<!--    <button onclick="changeView('view-login')">2. 로그인창</button>-->
+<!--    <button onclick="changeView('view-main-user')">3. 로그인 후 메인</button>-->
+<!--    <button onclick="changeView('view-score')">4. 성적확인(점수)</button>-->
+<!--</div>-->
+
+<!-- 공통 헤더 및 슬라이드 드롭다운 메뉴 영역 -->
+<header id="main-header" onmouseenter="openMenu()" onmouseleave="closeMenu()">
+    <div class="top-header-container">
+        <div class="brand-logo" onclick="changeView('view-main-guest')">
+            <span class="asterisk">✱</span>toeic<span class="dot">.</span>
+        </div>
+
+        <div class="user-pill-bar" id="user-pill-area"></div>
+    </div>
+
+    <div class="nav-border-top">
+        <nav class="main-menu-container">
+            <ul>
+                <li class="has-badge">시험접수</li>
+                <li onclick="changeView('view-score')">성적확인</li>
+                <li>시험소개</li>
+                <li>활용현황</li>
+                <li>수험자가이드</li>
+                <li>시험준비</li>
+                <li>토익스토리 <span class="external-icon">↗</span></li>
+            </ul>
+        </nav>
+
+        <!-- 슬라이드 애니메이션으로 내려오는 서브 메뉴 드롭다운 상자[cite: 9] -->
+        <div class="dropdown-panel">
+            <div class="dropdown-content-grid">
+                <div class="dropdown-col">
+                    <a>시험접수</a>
+                    <a>접수확인/변경/취소</a>
+                    <a>시험일정</a>
+                    <a>고사장안내</a>
+                    <a>TOEIC Plaza 안내</a>
+                    <a>단체시험문의</a>
+                </div>
+                <div class="dropdown-col">
+                    <a onclick="changeView('view-score')">성적확인/성적표발급</a>
+                    <a>성적분석</a>
+                    <a>성적표원본대조</a>
+                    <a>YBM그랜드슬래머</a>
+                </div>
+                <div class="dropdown-col">
+                    <a>연혁</a>
+                    <a>소개</a>
+                    <a>샘플문제</a>
+                    <a>성적표양식</a>
+                    <a>한국 TOEIC 40주년 ↗</a>
+                    <a>Proficiency Description</a>
+                    <a>ETS Research Archives</a>
+                </div>
+                <div class="dropdown-col">
+                    <a>기업/기관</a>
+                    <a>국가공무원</a>
+                    <a>공공기관</a>
+                    <a>국가자격증</a>
+                    <a>대학/대학원</a>
+                    <a>채용정보</a>
+                    <a>활용정보</a>
+                </div>
+                <div class="dropdown-col">
+                    <a>수험자가이드</a>
+                    <a>시험관리규정</a>
+                </div>
+                <div class="dropdown-col">
+                    <a>시험교재</a>
+                    <a>실제기출 공개영상</a>
+                </div>
+                <div class="dropdown-col">
+                    <a>블로그</a>
+                    <a>뉴스레터</a>
+                    <a>YouTube</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="sub-nav-bar" id="sub-nav" style="display: none;">
+    <span>🏠</span> &gt;
+    <select><option>성적확인</option></select> &gt;
+    <select><option>성적확인/성적표발급</option></select>
+</div>
+
+<div class="main-container">
+
+    <!-- ================= 1 & 3. 메인 화면 ================= -->
+    <div id="view-main" class="screen-view active">
+        <div class="main-banners">
+            <div class="img-banner-card">
+                <img src="images/ad1.jpg" alt="이번 달 토익 고득점 여기서 나온다">
+            </div>
+
+            <div class="bg-light-blue">
+                <div class="chip-buttons">
+                    <div class="chip-btn"><span>TSC 10% 할인 쿠폰</span></div>
+                    <div class="chip-btn"><span>MOS 11월 할인 이벤트</span></div>
+                    <div class="chip-btn active-highlight"><span>2027년 TOEIC 일정 안내</span><span class="badge-new">NEW</span></div>
+                    <div class="chip-btn"><span>11월 설문조사 이벤트</span><span class="badge-new">NEW</span></div>
+                    <div class="chip-btn"><span>토익 패키지 접수 및 할인</span><span class="badge-new">NEW</span></div>
+                    <div class="chip-btn"><span>지자체 응시료 지원 사업</span></div>
+                </div>
+            </div>
+
+            <div class="img-banner-card">
+                <img src="images/ad2.png" alt="YBM 롯데카드 할인 응시권">
+            </div>
+        </div>
+
+        <div class="schedule-section">
+            <h3>시험일정안내</h3>
+            <div class="schedule-grid">
+                <div class="schedule-card">
+                    <span class="badge">접수중</span>
+                    <div class="date">2026.11.15(일)</div>
+                    <div class="info-text">접수마감 : 2026.11.12 13:00<br>성적발표 : 2026.11.24 12:00</div>
+                </div>
+                <div class="schedule-card">
+                    <span class="badge">접수중</span>
+                    <div class="date">2026.11.29(일)</div>
+                    <div class="info-text">접수마감 : 2026.11.16 10:00<br>성적발표 : 2026.12.08 12:00</div>
+                </div>
+                <div class="schedule-card">
+                    <span class="badge">접수중</span>
+                    <div class="date">2026.12.13(일)</div>
+                    <div class="info-text">접수마감 : 2026.11.30 10:00<br>성적발표 : 2026.12.22 12:00</div>
+                </div>
+                <div class="schedule-card">
+                    <span class="badge" style="background:#888;">접수예정</span>
+                    <div class="date">2026.12.27(일)</div>
+                    <div class="info-text">접수시작 : 2026.11.09 10:00<br>성적발표 : 2027.01.06 12:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 2. 로그인창 화면 ================= -->
+    <div id="view-login" class="screen-view">
+        <div class="login-box">
+            <h2>*YBM Family</h2>
+            <input type="text" class="login-input" placeholder="아이디">
+            <input type="password" class="login-input" placeholder="비밀번호">
+            <button class="login-btn-main" onclick="doLogin()">로그인</button>
+            <div class="login-sub-links">
+                <span>아이디 찾기</span> | <span>비밀번호 재설정</span> | <span>회원가입</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 4. 성적확인 화면 ================= -->
+    <div id="view-score" class="screen-view">
+        <h1 class="score-page-title">성적확인 / 성적표발급</h1>
+
+        <div class="score-section-hdr">전체성적</div>
+
+        <table class="score-table">
+            <thead>
+            <tr>
+                <th>시험</th>
+                <th>시험일</th>
+                <th>수험번호</th>
+                <th>성적 (LC / RC)</th>
+                <th>총점</th>
+                <th>성적표발급</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>제 532회 정기시험</td>
+                <td>2026.10.25(일)</td>
+                <td>018249</td>
+                <td>LC : <strong style="color:#1670df;">230점</strong> / RC : <strong style="color:#1670df;">260점</strong></td>
+                <td><strong style="color:#1670df; font-size: 16px;">490점</strong></td>
+                <td><button class="btn-outline" style="padding: 4px 10px; font-size:12px;">발급신청</button></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="action-btns">
+            <button class="btn-outline">시험접수</button>
+            <button class="btn-fill">성적표 발급 내역</button>
+        </div>
+
+        <div class="notice-list">
+            <p>• 성적표는 PDF 파일로 다운로드할 수 없습니다.</p>
+            <p>• 성적표 출력은 Windows 환경에서만 가능합니다.(MacOS 환경 미지원)</p>
+            <p>• 성적 유효기간은 시험일로부터 2년 뒤 해당 시험일까지 입니다.</p>
+            <p>• 성적표 발급은 성적 유효기간 내에만 가능합니다.</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let isLogged = false;
+
+    // 드롭다운 메뉴 제어 함수
+    function openMenu() {
+        document.getElementById('main-header').classList.add('menu-open');
+    }
+    function closeMenu() {
+        document.getElementById('main-header').classList.remove('menu-open');
+    }
+
+    function updateHeaderUI() {
+        const pillArea = document.getElementById('user-pill-area');
+        if(isLogged) {
+            pillArea.innerHTML = `
+                    <div class="ybm-logo">III <span>와이비엠</span></div>
+                    <span class="divider">|</span>
+                    <span class="user-name" onclick="changeView('view-score')">qw3839님 ▼</span>
+                    <span class="divider">|</span>
+                    <span class="link-item" onclick="changeView('view-score')">마이테스트</span>
+                    <span class="divider">|</span>
+                    <span class="link-item">고객센터</span>
+                    <button class="btn-all-exam" onclick="doLogout()" style="background:#ffdddd; color:#d9534f;">로그아웃</button>
+                `;
+        } else {
+            pillArea.innerHTML = `
+                    <div class="ybm-logo">III <span>와이비엠</span></div>
+                    <span class="divider">|</span>
+                    <span class="link-item" onclick="changeView('view-login')">로그인</span>
+                    <span class="divider">|</span>
+                    <span class="link-item" onclick="changeView('view-login')">회원가입</span>
+                    <span class="divider">|</span>
+                    <span class="link-item">마이테스트</span>
+                    <span class="divider">|</span>
+                    <span class="link-item">고객센터</span>
+                    <button class="btn-all-exam">전체시험</button>
+                `;
+        }
+    }
+
+    function changeView(viewId) {
+        document.querySelectorAll('.screen-view').forEach(el => el.classList.remove('active'));
+        const subNav = document.getElementById('sub-nav');
+
+        if(viewId === 'view-main-guest') {
+            isLogged = false;
+            document.getElementById('view-main').classList.add('active');
+            subNav.style.display = 'none';
+        } else if(viewId === 'view-main-user') {
+            isLogged = true;
+            document.getElementById('view-main').classList.add('active');
+            subNav.style.display = 'none';
+        } else if(viewId === 'view-login') {
+            document.getElementById('view-login').classList.add('active');
+            subNav.style.display = 'none';
+        } else if(viewId === 'view-score') {
+            document.getElementById('view-score').classList.add('active');
+            subNav.style.display = 'flex';
+        }
+
+        closeMenu(); // 메뉴 클릭 시 드롭다운 닫기
+        updateHeaderUI();
+        window.scrollTo(0, 0);
+    }
+
+    function doLogin() {
+        isLogged = true;
+        changeView('view-main-user');
+    }
+
+    function doLogout() {
+        isLogged = false;
+        changeView('view-main-guest');
+    }
+
+    updateHeaderUI();
+</script>
+</body>
+</html>
